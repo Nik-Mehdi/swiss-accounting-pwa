@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { collection, onSnapshot, query, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { LanguageProvider } from "./context/LanguageContext";
+import { LanguageProvider, useLanguage } from "./context/LanguageContext"; // 👈 هوک زبان اضافه شد
 
 import { tokens } from "./styles/tokens";
 import { Sidebar } from "./components/Sidebar";
@@ -46,30 +46,82 @@ const TransactionsPage = ({ t, transactions, onDeleteTx }) => (
   </div>
 );
 
-// --- AUTH PAGES ---
+// --- 🔐 AUTH PAGES (Login & Register) ---
 const LoginPage = ({ onGoOnboarding, t }) => {
+  const { tr } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [msg, setMsg] = useState(""); // برای پیام موفقیتِ فراموشی رمز
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, loginWithGoogle, loginWithApple, resetPassword } = useAuth();
+
+  // مبدل ارورهای فایربیس به زبان کاربر
+  const getAuthError = (errCode) => {
+    if (errCode.includes("wrong-password") || errCode.includes("user-not-found") || errCode.includes("invalid-credential")) return tr("errInvalidCreds");
+    if (errCode.includes("too-many-requests")) return tr("errTooManyReqs");
+    return tr("errDefaultAuth");
+  };
+
   const handleSubmit = async (e) => {
-    e.preventDefault(); setError(""); setLoading(true);
-    try { await login(email, password); } catch (err) { setError("Sign in failed."); }
+    e.preventDefault(); setError(""); setMsg(""); setLoading(true);
+    try { await login(email, password); } catch (err) { setError(getAuthError(err.code || err.message)); }
     setLoading(false);
   };
+
+  const handleForgotPass = async () => {
+    if (!email) { setError(tr("enterEmailForReset")); return; }
+    setError(""); setMsg("");
+    try {
+      await resetPassword(email);
+      setMsg(tr("resetEmailSent"));
+    } catch (err) { setError(getAuthError(err.code || err.message)); }
+  };
+
+  const handleSocialLogin = async (providerFunc) => {
+    setError(""); setMsg("");
+    try { await providerFunc(); } catch (err) { setError(getAuthError(err.code || err.message)); }
+  };
+
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: t.bg, alignItems: "center", justifyContent: "center", padding: 20 }}>
-      <Card style={{ width: "100%", maxWidth: 400, padding: 40 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 20, color: t.text }}>Welcome back</h2>
-        {error && <div style={{ background: t.redSoft, color: t.red, padding: 10, borderRadius: 8, marginBottom: 15, fontSize: 13 }}>{error}</div>}
+      <Card style={{ width: "100%", maxWidth: 420, padding: "40px 30px" }}>
+        <div style={{ textAlign: "center", marginBottom: 30 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: t.text, marginBottom: 6 }}>{tr("welcomeBack")}</h2>
+          <p style={{ color: t.text3, fontSize: 14 }}>{tr("welcomeBackDesc")}</p>
+        </div>
+
+        {error && <div style={{ background: t.redSoft, color: t.red, padding: "12px 16px", borderRadius: 8, marginBottom: 20, fontSize: 13, fontWeight: 600 }}>{error}</div>}
+        {msg && <div style={{ background: t.greenSoft, color: t.green, padding: "12px 16px", borderRadius: 8, marginBottom: 20, fontSize: 13, fontWeight: 600 }}>{msg}</div>}
+        
         <form onSubmit={handleSubmit}>
-          <FormGroup label="Email"><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></FormGroup>
-          <FormGroup label="Password"><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></FormGroup>
-          <Btn fullWidth style={{ marginTop: 10 }}>{loading ? "Signing in..." : "Sign in"}</Btn>
+          <FormGroup label={tr("email")}><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></FormGroup>
+          <FormGroup label={tr("password")}>
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </FormGroup>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "-10px", marginBottom: "15px" }}>
+             <span onClick={handleForgotPass} style={{ color: t.brand, fontSize: 12, cursor: "pointer", fontWeight: 600 }}>{tr("forgotPassword")}</span>
+          </div>
+          <Btn fullWidth style={{ padding: "12px 0", fontSize: 15 }}>{loading ? tr("saving") : tr("loginAction")}</Btn>
         </form>
-        <div style={{ textAlign: "center", fontSize: 12.5, color: t.text3, marginTop: 20 }}>
-          Don't have an account? <span style={{ color: t.brand, cursor: "pointer", fontWeight: 600 }} onClick={onGoOnboarding}>Create account</span>
+
+        <div style={{ display: "flex", alignItems: "center", margin: "24px 0", color: t.text3, fontSize: 12 }}>
+          <div style={{ flex: 1, height: 1, background: t.border }}></div>
+          <span style={{ padding: "0 12px" }}>{tr("orContinueWith")}</span>
+          <div style={{ flex: 1, height: 1, background: t.border }}></div>
+        </div>
+
+        <div style={{ display: "flex", gap: 12, flexDirection: "column" }}>
+          <Btn variant="ghost" onClick={() => handleSocialLogin(loginWithGoogle)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
+            🌐 {tr("continueWithGoogle")}
+          </Btn>
+          <Btn variant="ghost" onClick={() => handleSocialLogin(loginWithApple)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
+            🍏 {tr("continueWithApple")}
+          </Btn>
+        </div>
+
+        <div style={{ textAlign: "center", fontSize: 13, color: t.text3, marginTop: 30 }}>
+          {tr("noAccountYet")} <span style={{ color: t.brand, cursor: "pointer", fontWeight: 700 }} onClick={onGoOnboarding}>{tr("createAccount")}</span>
         </div>
       </Card>
     </div>
@@ -77,28 +129,65 @@ const LoginPage = ({ onGoOnboarding, t }) => {
 };
 
 const RegisterPage = ({ onGoLogin, t }) => {
+  const { tr } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signup } = useAuth();
+  const { signup, loginWithGoogle, loginWithApple } = useAuth();
+
+  const getAuthError = (errCode) => {
+    if (errCode.includes("email-already-in-use")) return tr("errEmailInUse");
+    if (errCode.includes("weak-password")) return tr("errWeakPassword");
+    return tr("errDefaultAuth");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault(); setError(""); setLoading(true);
-    try { await signup(email, password); } catch (err) { setError("Registration failed: " + err.message); }
+    try { await signup(email, password); } catch (err) { setError(getAuthError(err.code || err.message)); }
     setLoading(false);
   };
+
+  const handleSocialLogin = async (providerFunc) => {
+    setError("");
+    try { await providerFunc(); } catch (err) { setError(getAuthError(err.code || err.message)); }
+  };
+
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: t.bg, alignItems: "center", justifyContent: "center", padding: 20 }}>
-      <Card style={{ width: "100%", maxWidth: 400, padding: 40 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 20, color: t.text }}>Create Workspace</h2>
-        {error && <div style={{ background: t.redSoft, color: t.red, padding: 10, borderRadius: 8, marginBottom: 15, fontSize: 13 }}>{error}</div>}
+      <Card style={{ width: "100%", maxWidth: 420, padding: "40px 30px" }}>
+        <div style={{ textAlign: "center", marginBottom: 30 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: t.text, marginBottom: 6 }}>{tr("createWorkspace")}</h2>
+          <p style={{ color: t.text3, fontSize: 14 }}>{tr("createWorkspaceDesc")}</p>
+        </div>
+
+        {error && <div style={{ background: t.redSoft, color: t.red, padding: "12px 16px", borderRadius: 8, marginBottom: 20, fontSize: 13, fontWeight: 600 }}>{error}</div>}
+        
         <form onSubmit={handleSubmit}>
-          <FormGroup label="Email"><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></FormGroup>
-          <FormGroup label="Password (min 6 chars)"><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} /></FormGroup>
-          <Btn fullWidth style={{ marginTop: 10 }}>{loading ? "Creating..." : "Sign Up"}</Btn>
+          <FormGroup label={tr("email")}><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></FormGroup>
+          <FormGroup label={`${tr("password")} (min 6)`}>
+             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+          </FormGroup>
+          <Btn fullWidth style={{ marginTop: 10, padding: "12px 0", fontSize: 15 }}>{loading ? tr("saving") : tr("signUpAction")}</Btn>
         </form>
-        <div style={{ textAlign: "center", fontSize: 12.5, color: t.text3, marginTop: 20 }}>
-          Already have an account? <span style={{ color: t.brand, cursor: "pointer", fontWeight: 600 }} onClick={onGoLogin}>Sign in</span>
+
+        <div style={{ display: "flex", alignItems: "center", margin: "24px 0", color: t.text3, fontSize: 12 }}>
+          <div style={{ flex: 1, height: 1, background: t.border }}></div>
+          <span style={{ padding: "0 12px" }}>{tr("orContinueWith")}</span>
+          <div style={{ flex: 1, height: 1, background: t.border }}></div>
+        </div>
+
+        <div style={{ display: "flex", gap: 12, flexDirection: "column" }}>
+          <Btn variant="ghost" onClick={() => handleSocialLogin(loginWithGoogle)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
+            🌐 {tr("continueWithGoogle")}
+          </Btn>
+          <Btn variant="ghost" onClick={() => handleSocialLogin(loginWithApple)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
+            🍏 {tr("continueWithApple")}
+          </Btn>
+        </div>
+
+        <div style={{ textAlign: "center", fontSize: 13, color: t.text3, marginTop: 30 }}>
+          {tr("alreadyHaveAccount")} <span style={{ color: t.brand, cursor: "pointer", fontWeight: 700 }} onClick={onGoLogin}>{tr("loginAction")}</span>
         </div>
       </Card>
     </div>
@@ -217,7 +306,6 @@ const MainContent = () => {
         </div>
       </div>
       
-      {/* 👇 جادوی هوشمند: پاس دادن اسم دفتر به مودال در صورت حضور در صفحه دفتر 👇 */}
       {addTxOpen && (
         <AddTransactionModal 
           onClose={() => setAddTxOpen(false)} 

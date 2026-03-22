@@ -68,7 +68,6 @@ const translations = {
     category: "Kategorie", amount: "Betrag", transfer: "Übertrag", generatedBy: "Automatisch generiert von Ledgr Workspace am",
     validForAccounting: "Dies ist ein computergeneriertes Dokument und gültig für Buchhaltungszwecke.", currency: "Währung",
 
-    // کلمات مودال تراکنش جدید (AddTransactionModal)
     newTransaction: "Neue Transaktion", fromLedger: "Von Konto", toLedger: "Auf Konto",
     descPlaceholder: "z.B. Mittagessen mit Kunden...", attachReceipt: "Beleg anhängen",
     savingAndUploading: "Speichern & Hochladen...", saveTransaction: "Transaktion Speichern",
@@ -79,7 +78,20 @@ const translations = {
     catPayroll: "Löhne & Gehälter", catTaxes: "Steuern & Gebühren", catInsurance: "Versicherungen",
     catLegal: "Recht & Buchhaltung", catEquipment: "Geräte & Hardware", catMisc: "Sonstiges",
     catSales: "Verkäufe / Produktumsatz", catServices: "Dienstleistungen / Beratung",
-    catInvestments: "Investitionen / Zinsen", catRefunds: "Rückerstattungen", catGrants: "Fördermittel & Zuschüsse", catOtherIncome: "Sonstige Einnahmen"
+    catInvestments: "Investitionen / Zinsen", catRefunds: "Rückerstattungen", catGrants: "Fördermittel & Zuschüsse", catOtherIncome: "Sonstige Einnahmen",
+
+    // کلمات گیت ورود (Auth)
+    welcomeBackDesc: "Melden Sie sich an, um auf Ihr Konto zuzugreifen.", loginAction: "Anmelden",
+    forgotPassword: "Passwort vergessen?", orContinueWith: "oder weiter mit",
+    continueWithGoogle: "Weiter mit Google", continueWithApple: "Weiter mit Apple",
+    noAccountYet: "Noch kein Konto?", createAccount: "Konto erstellen",
+    createWorkspace: "Workspace erstellen", createWorkspaceDesc: "Erstellen Sie Ihr Konto, um loszulegen.",
+    signUpAction: "Registrieren", alreadyHaveAccount: "Haben Sie bereits ein Konto?",
+    errInvalidCreds: "E-Mail oder Passwort ist falsch.", errEmailInUse: "Diese E-Mail wird bereits verwendet.",
+    errWeakPassword: "Das Passwort ist zu schwach (min. 6 Zeichen).", errTooManyReqs: "Zu viele Versuche. Bitte versuchen Sie es später erneut.",
+    errDefaultAuth: "Ein Authentifizierungsfehler ist aufgetreten.",
+    enterEmailForReset: "Bitte geben Sie Ihre E-Mail-Adresse ein, um das Passwort zurückzusetzen.",
+    resetEmailSent: "Link zum Zurücksetzen gesendet! Überprüfen Sie Ihren Posteingang."
   },
   en: {
     dashboard: "Dashboard", invoices: "Invoices", clients: "Clients", receipts: "Receipts",
@@ -146,7 +158,6 @@ const translations = {
     category: "Category", amount: "Amount", transfer: "Transfer", generatedBy: "Generated automatically by Ledgr Workspace on",
     validForAccounting: "This is a computer generated document and valid for accounting purposes.", currency: "Currency",
 
-    // کلمات مودال تراکنش جدید (AddTransactionModal)
     newTransaction: "New Transaction", fromLedger: "From Ledger", toLedger: "To Ledger",
     descPlaceholder: "e.g. Lunch with client...", attachReceipt: "Attach Receipt",
     savingAndUploading: "Saving & Uploading...", saveTransaction: "Save Transaction",
@@ -157,7 +168,20 @@ const translations = {
     catPayroll: "Payroll & Salaries", catTaxes: "Taxes & Fees", catInsurance: "Insurance",
     catLegal: "Legal & Accounting", catEquipment: "Equipment & Hardware", catMisc: "Miscellaneous",
     catSales: "Sales / Product Revenue", catServices: "Services / Consulting",
-    catInvestments: "Investments / Interest", catRefunds: "Refunds", catGrants: "Grants & Funding", catOtherIncome: "Other Income"
+    catInvestments: "Investments / Interest", catRefunds: "Refunds", catGrants: "Grants & Funding", catOtherIncome: "Other Income",
+
+    // کلمات گیت ورود (Auth)
+    welcomeBackDesc: "Sign in to access your workspace.", loginAction: "Sign in",
+    forgotPassword: "Forgot password?", orContinueWith: "or continue with",
+    continueWithGoogle: "Continue with Google", continueWithApple: "Continue with Apple",
+    noAccountYet: "Don't have an account?", createAccount: "Create account",
+    createWorkspace: "Create Workspace", createWorkspaceDesc: "Create your account to get started.",
+    signUpAction: "Sign Up", alreadyHaveAccount: "Already have an account?",
+    errInvalidCreds: "Invalid email or password.", errEmailInUse: "This email is already in use.",
+    errWeakPassword: "Password is too weak (min 6 chars).", errTooManyReqs: "Too many attempts. Please try again later.",
+    errDefaultAuth: "An authentication error occurred.",
+    enterEmailForReset: "Please enter your email to reset your password.",
+    resetEmailSent: "Password reset link sent! Check your inbox."
   },
   fr: {
     dashboard: "Tableau de bord", invoices: "Factures", clients: "Clients", receipts: "Reçus",
@@ -224,7 +248,6 @@ const translations = {
     category: "Catégorie", amount: "Montant", transfer: "Transfert", generatedBy: "Généré automatiquement par Ledgr Workspace le",
     validForAccounting: "Ceci est un document généré par ordinateur et valide à des fins comptables.", currency: "Devise",
 
-    // کلمات مودال تراکنش جدید (AddTransactionModal)
     newTransaction: "Nouvelle transaction", fromLedger: "Depuis le compte", toLedger: "Vers le compte",
     descPlaceholder: "ex: Déjeuner avec client...", attachReceipt: "Joindre un reçu",
     savingAndUploading: "Enregistrement & Téléchargement...", saveTransaction: "Enregistrer la transaction",
@@ -235,7 +258,20 @@ const translations = {
     catPayroll: "Salaires & Paie", catTaxes: "Taxes & Frais", catInsurance: "Assurances",
     catLegal: "Frais juridiques & comptables", catEquipment: "Matériel & Équipement", catMisc: "Divers",
     catSales: "Ventes / Chiffre d'affaires", catServices: "Services / Conseil",
-    catInvestments: "Investissements / Intérêts", catRefunds: "Remboursements", catGrants: "Subventions & Financements", catOtherIncome: "Autres revenus"
+    catInvestments: "Investissements / Intérêts", catRefunds: "Remboursements", catGrants: "Subventions & Financements", catOtherIncome: "Autres revenus",
+
+    // کلمات گیت ورود (Auth)
+    welcomeBackDesc: "Connectez-vous pour accéder à votre espace.", loginAction: "Se connecter",
+    forgotPassword: "Mot de passe oublié ?", orContinueWith: "ou continuer avec",
+    continueWithGoogle: "Continuer avec Google", continueWithApple: "Continuer avec Apple",
+    noAccountYet: "Pas encore de compte ?", createAccount: "Créer un compte",
+    createWorkspace: "Créer un espace de travail", createWorkspaceDesc: "Créez votre compte pour commencer.",
+    signUpAction: "S'inscrire", alreadyHaveAccount: "Vous avez déjà un compte ?",
+    errInvalidCreds: "E-mail ou mot de passe invalide.", errEmailInUse: "Cet e-mail est déjà utilisé.",
+    errWeakPassword: "Le mot de passe est trop faible (min 6 caractères).", errTooManyReqs: "Trop de tentatives. Veuillez réessayer plus tard.",
+    errDefaultAuth: "Une erreur d'authentification s'est produite.",
+    enterEmailForReset: "Veuillez entrer votre e-mail pour réinitialiser le mot de passe.",
+    resetEmailSent: "Lien de réinitialisation envoyé ! Vérifiez votre boîte de réception."
   },
   it: {
     dashboard: "Dashboard", invoices: "Fatture", clients: "Clienti", receipts: "Ricevute",
@@ -302,7 +338,6 @@ const translations = {
     category: "Categoria", amount: "Importo", transfer: "Trasferimento", generatedBy: "Generato automaticamente da Ledgr Workspace il",
     validForAccounting: "Questo è un documento generato al computer e valido a fini contabili.", currency: "Valuta",
 
-    // کلمات مودال تراکنش جدید (AddTransactionModal)
     newTransaction: "Nuova transazione", fromLedger: "Dal Conto", toLedger: "Al Conto",
     descPlaceholder: "es. Pranzo con cliente...", attachReceipt: "Allega ricevuta",
     savingAndUploading: "Salvataggio e Caricamento...", saveTransaction: "Salva transazione",
@@ -313,7 +348,20 @@ const translations = {
     catPayroll: "Paghe & Stipendi", catTaxes: "Tasse & Commissioni", catInsurance: "Assicurazioni",
     catLegal: "Legale & Contabile", catEquipment: "Attrezzature & Hardware", catMisc: "Varie",
     catSales: "Vendite / Ricavi", catServices: "Servizi / Consulenza",
-    catInvestments: "Investimenti / Interessi", catRefunds: "Rimborsi", catGrants: "Sovvenzioni & Finanziamenti", catOtherIncome: "Altre entrate"
+    catInvestments: "Investimenti / Interessi", catRefunds: "Rimborsi", catGrants: "Sovvenzioni & Finanziamenti", catOtherIncome: "Altre entrate",
+
+    // کلمات گیت ورود (Auth)
+    welcomeBackDesc: "Accedi per entrare nel tuo spazio di lavoro.", loginAction: "Accedi",
+    forgotPassword: "Password dimenticata?", orContinueWith: "o continua con",
+    continueWithGoogle: "Continua con Google", continueWithApple: "Continua con Apple",
+    noAccountYet: "Non hai ancora un account?", createAccount: "Crea account",
+    createWorkspace: "Crea Workspace", createWorkspaceDesc: "Crea il tuo account per iniziare.",
+    signUpAction: "Iscriviti", alreadyHaveAccount: "Hai già un account?",
+    errInvalidCreds: "Email o password non validi.", errEmailInUse: "Questa email è già in uso.",
+    errWeakPassword: "La password è troppo debole (min 6 caratteri).", errTooManyReqs: "Troppi tentativi. Riprova più tardi.",
+    errDefaultAuth: "Si è verificato un errore di autenticazione.",
+    enterEmailForReset: "Inserisci la tua email per reimpostare la password.",
+    resetEmailSent: "Link di ripristino inviato! Controlla la tua casella di posta."
   }
 };
 
