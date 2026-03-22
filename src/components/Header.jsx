@@ -1,12 +1,11 @@
 // src/components/Header.jsx
 import { useState } from "react";
-import { useLanguage } from "../context/LanguageContext"; // وارد کردن کانتکست زبان
+import { useLanguage } from "../context/LanguageContext";
 
 export const Header = ({ title, sub, dark, onToggleDark, onOpenAddTx, t, onToggleSidebar, isMobile, transactions = [] }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
   
-  // دسترسی به سیستم ترجمه و زبان فعلی
   const { lang, changeLang, tr } = useLanguage();
 
   const filteredTxs = transactions.filter(tx => {
@@ -20,7 +19,6 @@ export const Header = ({ title, sub, dark, onToggleDark, onOpenAddTx, t, onToggl
     );
   }).slice(0, 6);
 
-  // استایل دکمه‌های زبان
   const langBtnStyle = (l) => ({
     background: lang === l ? t.brand : "transparent",
     color: lang === l ? "#fff" : t.text2,
@@ -57,7 +55,7 @@ export const Header = ({ title, sub, dark, onToggleDark, onOpenAddTx, t, onToggl
         <div style={{ flex: 1, display: "flex", justifyContent: "center", position: "relative", maxWidth: 400 }}>
            <input 
              type="text" 
-             placeholder={tr('searchPlaceholder') || (isMobile ? "Search..." : "Search transactions...")}
+             placeholder={tr('searchPlaceholder')}
              value={searchQuery}
              onChange={(e) => {
                setSearchQuery(e.target.value);
@@ -66,15 +64,9 @@ export const Header = ({ title, sub, dark, onToggleDark, onOpenAddTx, t, onToggl
              onFocus={() => setShowResults(searchQuery.length > 0)}
              onBlur={() => setTimeout(() => setShowResults(false), 200)}
              style={{
-               width: "100%",
-               padding: "10px 16px 10px 36px",
-               borderRadius: 20,
-               border: `1px solid ${t.border}`,
-               background: t.bg,
-               color: t.text,
-               fontSize: 14,
-               outline: "none",
-               transition: "all 0.2s"
+               width: "100%", padding: "10px 16px 10px 36px", borderRadius: 20,
+               border: `1px solid ${t.border}`, background: t.bg, color: t.text,
+               fontSize: 14, outline: "none", transition: "all 0.2s"
              }}
            />
            <span style={{ position: "absolute", left: 12, top: 10, color: t.text3, fontSize: 14 }}>🔍</span>
@@ -83,7 +75,7 @@ export const Header = ({ title, sub, dark, onToggleDark, onOpenAddTx, t, onToggl
         {/* سمت راست: تغییر زبان، حالت شب و دکمه جدید */}
         <div style={{ display: "flex", gap: 10, alignItems: "center", minWidth: isMobile ? "auto" : "auto", justifyContent: "flex-end" }}>
            
-           {/* 🌍 سوئیچر زبان (جدید) */}
+           {/* 🌍 سوئیچر زبان فقط برای دسکتاپ (تو موبایل میره تو سایدبار) */}
            {!isMobile && (
              <div style={{ display: "flex", gap: 4, marginRight: 8, background: t.bg, padding: 3, borderRadius: 8, border: `1px solid ${t.border}` }}>
                {['de', 'fr', 'it', 'en'].map(l => (
@@ -99,7 +91,7 @@ export const Header = ({ title, sub, dark, onToggleDark, onOpenAddTx, t, onToggl
            </button>
            
            <button onClick={onOpenAddTx} style={{ background: t.brand, color: "#fff", border: "none", borderRadius: 8, padding: isMobile ? "0 12px" : "0 16px", height: 36, fontWeight: 600, cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-             <span>+</span> {!isMobile && (tr('new') || "New")}
+             <span>+</span> {!isMobile && tr('new')}
            </button>
         </div>
       </div>
@@ -107,20 +99,14 @@ export const Header = ({ title, sub, dark, onToggleDark, onOpenAddTx, t, onToggl
       {/* 📂 نتایج جستجو */}
       {showResults && searchQuery && (
         <div style={{ 
-          position: "absolute", 
-          top: "100%", 
-          left: isMobile ? 10 : "50%", 
+          position: "absolute", top: "100%", left: isMobile ? 10 : "50%", 
           transform: isMobile ? "none" : "translateX(-50%)", 
           width: isMobile ? "calc(100% - 20px)" : 450, 
-          background: t.surface, 
-          border: `1px solid ${t.border}`, 
-          borderRadius: 16, 
-          boxShadow: "0 12px 40px rgba(0,0,0,0.15)", 
-          padding: 12,
-          marginTop: 8,
-          zIndex: 200 
+          background: t.surface, border: `1px solid ${t.border}`, 
+          borderRadius: 16, boxShadow: "0 12px 40px rgba(0,0,0,0.15)", 
+          padding: 12, marginTop: 8, zIndex: 200 
         }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: t.text3, marginBottom: 12, paddingLeft: 8, letterSpacing: 0.5 }}>{tr('searchResults') || "SEARCH RESULTS"}</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: t.text3, marginBottom: 12, paddingLeft: 8, letterSpacing: 0.5 }}>SEARCH RESULTS</div>
           {filteredTxs.length === 0 ? (
             <div style={{ padding: 20, color: t.text3, fontSize: 13, textAlign: "center" }}>No results for "{searchQuery}"</div>
           ) : (
@@ -131,7 +117,7 @@ export const Header = ({ title, sub, dark, onToggleDark, onOpenAddTx, t, onToggl
                   <div style={{ fontSize: 11, color: t.text3, marginTop: 4 }}>{tx.category} · {tx.ledger}</div>
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: tx.type === "expense" ? t.red : t.green, whiteSpace: "nowrap" }}>
-                   {tx.type === "expense" ? "-" : "+"} CHF {Math.abs(Number(tx.amount)).toLocaleString("de-CH", {minimumFractionDigits: 2})}
+                   {tx.type === "expense" ? "-" : "+"} {Math.abs(Number(tx.amount)).toLocaleString("de-CH", {minimumFractionDigits: 2})}
                 </div>
               </div>
             ))

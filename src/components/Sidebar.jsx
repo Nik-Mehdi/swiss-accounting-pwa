@@ -2,7 +2,8 @@
 import { useLanguage } from "../context/LanguageContext";
 
 export const Sidebar = ({ activePage, onNavigate, t, isMobile, isOpen, onClose }) => {
-  const { tr } = useLanguage();
+  // 👇 lang و changeLang رو از کانتکست استخراج کردیم 👇
+  const { tr, lang, changeLang } = useLanguage();
 
   const menu = [
     { id: "dashboard", icon: "🏠", label: tr("dashboard") },
@@ -58,6 +59,26 @@ export const Sidebar = ({ activePage, onNavigate, t, isMobile, isOpen, onClose }
             )
           })}
         </div>
+
+        {/* 👇 بخش جدید: انتخاب زبان در پایین سایدبار 👇 */}
+        <div style={{ padding: "16px 20px", borderTop: `1px solid ${t.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: t.text2 }}>🌐 Language</div>
+          <select 
+            value={lang} 
+            onChange={(e) => changeLang(e.target.value)}
+            style={{
+              background: t.bg, color: t.text, border: `1px solid ${t.border}`, 
+              borderRadius: "8px", padding: "6px 8px", fontSize: "13px", 
+              cursor: "pointer", outline: "none", fontWeight: 500
+            }}
+          >
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="it">🇮🇹 Italiano</option>
+          </select>
+        </div>
+        
       </div>
     </>
   );

@@ -1,3 +1,4 @@
+// src/context/LanguageContext.jsx
 import { createContext, useContext, useState } from "react";
 
 const LanguageContext = createContext();
@@ -70,7 +71,7 @@ const translations = {
 
     newTransaction: "Neue Transaktion", fromLedger: "Von Konto", toLedger: "Auf Konto",
     descPlaceholder: "z.B. Mittagessen mit Kunden...", attachReceipt: "Beleg anhängen",
-    savingAndUploading: "Speichern & Hochladen...", saveTransaction: "Transaktion Speichern",
+    savingAndUploading: "Wird gespeichert & hochgeladen...", saveTransaction: "Transaktion Speichern",
     fillRequiredFields: "Bitte füllen Sie Betrag, Beschreibung aus und wählen Sie ein Konto.",
     sameSourceDestError: "Quelle und Ziel dürfen nicht identisch sein!", errorSavingTx: "Fehler beim Speichern der Transaktion",
     catSoftware: "Software & Tools", catMeals: "Verpflegung & Unterhaltung", catOffice: "Büromaterial",
@@ -91,7 +92,16 @@ const translations = {
     errWeakPassword: "Das Passwort ist zu schwach (min. 6 Zeichen).", errTooManyReqs: "Zu viele Versuche. Bitte versuchen Sie es später erneut.",
     errDefaultAuth: "Ein Authentifizierungsfehler ist aufgetreten.",
     enterEmailForReset: "Bitte geben Sie Ihre E-Mail-Adresse ein, um das Passwort zurückzusetzen.",
-    resetEmailSent: "Link zum Zurücksetzen gesendet! Überprüfen Sie Ihren Posteingang."
+    resetEmailSent: "Link zum Zurücksetzen gesendet! Überprüfen Sie Ihren Posteingang.",
+
+    // 👇 تنظیمات جدید (که در عکس‌ها ترجمه نشده بود) 👇
+    general: "Allgemein", workspaceProfile: "Workspace-Profil", security: "Sicherheit",
+    preferences: "Präferenzen", defaultCurrency: "Standardwährung", savePreferences: "Präferenzen speichern",
+    companyDetails: "Unternehmensdetails", companyPersonalName: "Unternehmens-/Personenname",
+    uploadLogoPicture: "Logo / Bild hochladen", saveProfileInfo: "Profilinformationen speichern",
+    authenticationSettings: "Authentifizierungseinstellungen", emailAddress: "E-Mail-Adresse", newPasswordMin6Chars: "Neues Passwort (mind. 6 Zeichen)",
+    updateSecuritySettings: "Sicherheitseinstellungen aktualisieren",
+    notesSecurity: "* Hinweis: Eine Änderung Ihrer E-Mail-Adresse oder Ihres Passworts kann dazu führen, dass Sie sich erneut anmelden müssen.",
   },
   en: {
     dashboard: "Dashboard", invoices: "Invoices", clients: "Clients", receipts: "Receipts",
@@ -181,7 +191,16 @@ const translations = {
     errWeakPassword: "Password is too weak (min 6 chars).", errTooManyReqs: "Too many attempts. Please try again later.",
     errDefaultAuth: "An authentication error occurred.",
     enterEmailForReset: "Please enter your email to reset your password.",
-    resetEmailSent: "Password reset link sent! Check your inbox."
+    resetEmailSent: "Password reset link sent! Check your inbox.",
+
+    // 👇 تنظیمات جدید 👇
+    general: "General", workspaceProfile: "Workspace Profile", security: "Security",
+    preferences: "Preferences", defaultCurrency: "Default Currency", savePreferences: "Save Preferences",
+    companyDetails: "Company Details", companyPersonalName: "Company / Personal Name",
+    uploadLogoPicture: "Upload Logo / Picture", saveProfileInfo: "Save Profile Info",
+    authenticationSettings: "Authentication Settings", emailAddress: "Email Address", newPasswordMin6Chars: "New Password (min 6 characters)",
+    updateSecuritySettings: "Update Security Settings",
+    notesSecurity: "* Note: Changing your email or password might require you to log in again.",
   },
   fr: {
     dashboard: "Tableau de bord", invoices: "Factures", clients: "Clients", receipts: "Reçus",
@@ -250,7 +269,7 @@ const translations = {
 
     newTransaction: "Nouvelle transaction", fromLedger: "Depuis le compte", toLedger: "Vers le compte",
     descPlaceholder: "ex: Déjeuner avec client...", attachReceipt: "Joindre un reçu",
-    savingAndUploading: "Enregistrement & Téléchargement...", saveTransaction: "Enregistrer la transaction",
+    savingAndUploading: "Génération...", saveTransaction: "Enregistrer la transaction",
     fillRequiredFields: "Veuillez remplir le montant, la description et sélectionner un compte.",
     sameSourceDestError: "La source et la destination ne peuvent pas être identiques !", errorSavingTx: "Erreur lors de l'enregistrement",
     catSoftware: "Logiciels & Outils", catMeals: "Repas & Divertissement", catOffice: "Fournitures de bureau",
@@ -271,7 +290,16 @@ const translations = {
     errWeakPassword: "Le mot de passe est trop faible (min 6 caractères).", errTooManyReqs: "Trop de tentatives. Veuillez réessayer plus tard.",
     errDefaultAuth: "Une erreur d'authentification s'est produite.",
     enterEmailForReset: "Veuillez entrer votre e-mail pour réinitialiser le mot de passe.",
-    resetEmailSent: "Lien de réinitialisation envoyé ! Vérifiez votre boîte de réception."
+    resetEmailSent: "Lien de réinitialisation envoyé ! Vérifiez votre boîte de réception.",
+
+    // 👇 تنظیمات جدید 👇
+    general: "Général", workspaceProfile: "Profil de l'espace de travail", security: "Sécurité",
+    preferences: "Préférences", defaultCurrency: "Devise par défaut", savePreferences: "Enregistrer les préférences",
+    companyDetails: "Détails de l'entreprise", companyPersonalName: "Nom de l'entreprise / personnel",
+    uploadLogoPicture: "Télécharger Logo / Image", saveProfileInfo: "Enregistrer les infos du profil",
+    authenticationSettings: "Paramètres d'authentification", emailAddress: "Adresse e-mail", newPasswordMin6Chars: "Nouveau mot de passe (min 6 caractères)",
+    updateSecuritySettings: "Mettre à jour les paramètres de sécurité",
+    notesSecurity: "* Remarque : La modification de votre adresse e-mail ou de votre mot de passe peut nécessiter une reconnexion.",
   },
   it: {
     dashboard: "Dashboard", invoices: "Fatture", clients: "Clienti", receipts: "Ricevute",
@@ -305,7 +333,7 @@ const translations = {
     noEmail: "Nessuna Email", noPhone: "Nessun Telefono",
     
     ledgersTitle: "I Miei Conti", addNewLedger: "Nuovo Conto", noLedgersFound: "Nessun conto trovato.", 
-    createFirstLedger: "Crea il tuo primo conto per iniziare.", balance: "Saldo", type: "Tipo",
+    createFirstLedger: "Crea il tuo primo conto per iniziare.", balance: "Saldo", type: "Type",
     
     invoiceSettings: "Impostazioni fattura", prefix: "Prefisso", taxId: "N. IVA",
     bankName: "Nome banca", iban: "IBAN", street: "Via", zip: "NAP", city: "Città", country: "Paese",
@@ -317,7 +345,7 @@ const translations = {
     selectLedgerFirst: "Seleziona prima un conto.", transferOut: "Trasferimento in uscita",
     inTotalDashboard: "Nel totale della dashboard", txs: "txs", currentBalance: "Saldo attuale",
     overviewTab: "Panoramica", reportsTab: "Rapporti", totalIn: "Totale Entrate",
-    totalOut: "Totale Uscite", openingBalance: "Saldo iniziale", transactions: "Transazioni",
+    totalOut: "Totale Uscite", openingBalance: "Saldo iniziale", transactions: "Transactions",
     noTransactions: "Nessuna transazione ancora.", expenseBreakdown: "Ripartizione delle spese per",
     noExpenses: "Nessuna spesa da analizzare ancora.", expensesCaps: "SPESE",
 
@@ -327,9 +355,9 @@ const translations = {
     noExpensesYet: "Nessuna spesa ancora.", totalCaps: "TOTALE",
     jan: "Gen", feb: "Feb", mar: "Mar", apr: "Apr", may: "Mag", jun: "Giu", jul: "Lug", aug: "Ago", sep: "Set", oct: "Ott", nov: "Nov", dec: "Dic",
 
-    exportReports: "Esportazione e Rapporti", generateOfficialDesc: "Genera rendiconti finanziari ufficiali e file CSV per il tuo commercialista.",
+    exportReports: "Esportazione e Rapporti", generateOfficialDesc: "Generate official financial statements and CSV files for your accountant.",
     reportFilters: "Filtri rapporto", selectLedger: "Seleziona Conto", allLedgersConsolidated: "Tutti i Conti (Consolidati)",
-    startDate: "Data di inizio", endDate: "Data di fine", previewSummary: "RIEPILOGO ANTEPRIMA", transactionsFound: "Transazioni trovate",
+    startDate: "Data di inizio", endDate: "Date di fine", previewSummary: "RIEPILOGO ANTEPRIMA", transactionsFound: "Transazioni trovate",
     expenses: "Spese", downloadExcel: "Scarica Excel (CSV)", printOfficialPdf: "Stampa / Salva come PDF Ufficiale",
     noTxsToExport: "Nessuna transazione da esportare in questo intervallo di date!", noTxsToPrint: "Nessuna transazione da stampare!",
     allAccountsConsolidated: "Tutti i Conti", financialReport: "Rapporto Finanziario", yourWorkspace: "Il tuo Workspace",
@@ -340,15 +368,15 @@ const translations = {
 
     newTransaction: "Nuova transazione", fromLedger: "Dal Conto", toLedger: "Al Conto",
     descPlaceholder: "es. Pranzo con cliente...", attachReceipt: "Allega ricevuta",
-    savingAndUploading: "Salvataggio e Caricamento...", saveTransaction: "Salva transazione",
+    savingAndUploading: "Generazione...", saveTransaction: "Salva transazione",
     fillRequiredFields: "Si prega di inserire importo, descrizione e selezionare un conto.",
     sameSourceDestError: "Sorgente e destinazione non possono essere uguali!", errorSavingTx: "Errore durante il salvataggio",
-    catSoftware: "Software & Strumenti", catMeals: "Pasti & Intrattenimento", catOffice: "Forniture per ufficio",
+    catSoftware: "Software & Strumenti", catMeals: "Pasti & Intrattenimento", catOffice: "Office Supplies",
     catTravel: "Viaggi & Trasporti", catRent: "Affitto & Utenze", catMarketing: "Marketing & Pubblicità",
     catPayroll: "Paghe & Stipendi", catTaxes: "Tasse & Commissioni", catInsurance: "Assicurazioni",
-    catLegal: "Legale & Contabile", catEquipment: "Attrezzature & Hardware", catMisc: "Varie",
+    catLegal: "Legale & Contabile", catEquipment: "Attrezzature & Hardware", catMisc: "Miscellaneous",
     catSales: "Vendite / Ricavi", catServices: "Servizi / Consulenza",
-    catInvestments: "Investimenti / Interessi", catRefunds: "Rimborsi", catGrants: "Sovvenzioni & Finanziamenti", catOtherIncome: "Altre entrate",
+    catInvestments: "Investimenti / Interessi", catRefunds: "Rimborsi", catGrants: "Grants & Funding", catOtherIncome: "Other Income",
 
     // کلمات گیت ورود (Auth)
     welcomeBackDesc: "Accedi per entrare nel tuo spazio di lavoro.", loginAction: "Accedi",
@@ -361,7 +389,16 @@ const translations = {
     errWeakPassword: "La password è troppo debole (min 6 caratteri).", errTooManyReqs: "Troppi tentativi. Riprova più tardi.",
     errDefaultAuth: "Si è verificato un errore di autenticazione.",
     enterEmailForReset: "Inserisci la tua email per reimpostare la password.",
-    resetEmailSent: "Link di ripristino inviato! Controlla la tua casella di posta."
+    resetEmailSent: "Link di ripristino inviato! Controlla la tua casella di posta.",
+
+    // 👇 تنظیمات جدید 👇
+    general: "Generale", workspaceProfile: "Profilo dello spazio di lavoro", security: "Sicurezza",
+    preferences: "Preferenze", defaultCurrency: "Valuta predefinita", savePreferences: "Salva preferenze",
+    companyDetails: "Dettagli dell'azienda", companyPersonalName: "Nome dell'azienda / personale",
+    uploadLogoPicture: "Carica Logo / Immagine", saveProfileInfo: "Salva informazioni del profil",
+    authenticationSettings: "Impostazioni di autenticazione", emailAddress: "Indirizzo e-mail", newPasswordMin6Chars: "Nuova password (min 6 caratteri)",
+    updateSecuritySettings: "Aggiorna impostazioni di sicurezza",
+    notesSecurity: "* Nota: La modifica dell'email o della password potrebbe richiedere un nuovo accesso.",
   }
 };
 

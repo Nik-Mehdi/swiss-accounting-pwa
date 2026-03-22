@@ -1,7 +1,7 @@
 // src/pages/Export.jsx
 import { useState } from "react";
 import { Card, Btn, FormGroup, Select, Input } from "../components/UI";
-import { useLanguage } from "../context/LanguageContext"; // 👈 هوک زبان اضافه شد
+import { useLanguage } from "../context/LanguageContext";
 
 export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
   const { tr, lang } = useLanguage();
@@ -54,15 +54,13 @@ export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
     document.body.removeChild(link);
   };
 
-  // 🖨️ موتور چاپ گزارش رسمی (Official PDF/Print)
+  // 🖨️ موتور هوشمند چاپ گزارش رسمی (Dual-Mode: دسکتاپ و موبایل)
   const handlePrint = () => {
     if (filteredTxs.length === 0) return alert(tr("noTxsToPrint"));
 
     const selectedLedgerName = ledgerId === "all" ? tr("allAccountsConsolidated") : ledgers.find(l => l.id === ledgerId)?.name;
     const currency = ledgerId !== "all" ? (ledgers.find(l => l.id === ledgerId)?.currency || "CHF") : "CHF";
 
-    const printWindow = window.open('', '', 'width=900,height=800');
-    
     const htmlContent = `
       <html>
         <head>
@@ -142,14 +140,37 @@ export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
         </body>
       </html>
     `;
-    
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-    
-    setTimeout(() => {
-      printWindow.focus();
-      printWindow.print();
-    }, 500);
+
+    // 📱 تشخیص هوشمند موبایل یا دسکتاپ 💻
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobileDevice) {
+      // راهکار مخصوص موبایل (استفاده از iframe مخفی برای باز کردن منوی بومی گوشی)
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      
+      iframe.contentWindow.document.write(htmlContent);
+      iframe.contentWindow.document.close();
+      
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        // حذف iframe بعد از عملیات برای جلوگیری از پر شدن حافظه
+        setTimeout(() => document.body.removeChild(iframe), 1000); 
+      }, 500);
+
+    } else {
+      // راهکار دسکتاپ (باز کردن پنجره پاپ‌آپ جدید)
+      const printWindow = window.open('', '', 'width=900,height=800');
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+      }, 500);
+    }
   };
 
   return (

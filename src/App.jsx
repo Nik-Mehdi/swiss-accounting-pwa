@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { collection, onSnapshot, query, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { LanguageProvider, useLanguage } from "./context/LanguageContext"; // 👈 هوک زبان اضافه شد
+import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 
 import { tokens } from "./styles/tokens";
 import { Sidebar } from "./components/Sidebar";
@@ -52,21 +52,28 @@ const LoginPage = ({ onGoOnboarding, t }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [msg, setMsg] = useState(""); // برای پیام موفقیتِ فراموشی رمز
+  const [msg, setMsg] = useState(""); 
   const [loading, setLoading] = useState(false);
   const { login, loginWithGoogle, loginWithApple, resetPassword } = useAuth();
 
-  // مبدل ارورهای فایربیس به زبان کاربر
   const getAuthError = (errCode) => {
-    if (errCode.includes("wrong-password") || errCode.includes("user-not-found") || errCode.includes("invalid-credential")) return tr("errInvalidCreds");
-    if (errCode.includes("too-many-requests")) return tr("errTooManyReqs");
-    return tr("errDefaultAuth");
+    if (!errCode) return tr("errDefaultAuth");
+    const code = String(errCode).toLowerCase();
+    if (code.includes("wrong-password") || code.includes("user-not-found") || code.includes("invalid-credential")) return tr("errInvalidCreds");
+    if (code.includes("too-many-requests")) return tr("errTooManyReqs");
+    return `${tr("errDefaultAuth")} | Raw Error: ${code}`; 
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); setError(""); setMsg(""); setLoading(true);
-    try { await login(email, password); } catch (err) { setError(getAuthError(err.code || err.message)); }
-    setLoading(false);
+    if (e) e.preventDefault(); 
+    if (!email || !password) return setError("Please enter email and password");
+    setError(""); setMsg(""); setLoading(true);
+    try { 
+      await login(email, password); 
+    } catch (err) { 
+      setError(getAuthError(err.code || err.message)); 
+      setLoading(false); 
+    }
   };
 
   const handleForgotPass = async () => {
@@ -102,7 +109,7 @@ const LoginPage = ({ onGoOnboarding, t }) => {
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "-10px", marginBottom: "15px" }}>
              <span onClick={handleForgotPass} style={{ color: t.brand, fontSize: 12, cursor: "pointer", fontWeight: 600 }}>{tr("forgotPassword")}</span>
           </div>
-          <Btn fullWidth style={{ padding: "12px 0", fontSize: 15 }}>{loading ? tr("saving") : tr("loginAction")}</Btn>
+          <Btn type="submit" onClick={handleSubmit} fullWidth style={{ padding: "12px 0", fontSize: 15 }}>{loading ? tr("saving") : tr("loginAction")}</Btn>
         </form>
 
         <div style={{ display: "flex", alignItems: "center", margin: "24px 0", color: t.text3, fontSize: 12 }}>
@@ -112,10 +119,10 @@ const LoginPage = ({ onGoOnboarding, t }) => {
         </div>
 
         <div style={{ display: "flex", gap: 12, flexDirection: "column" }}>
-          <Btn variant="ghost" onClick={() => handleSocialLogin(loginWithGoogle)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
+          <Btn variant="ghost" type="button" onClick={() => handleSocialLogin(loginWithGoogle)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
             🌐 {tr("continueWithGoogle")}
           </Btn>
-          <Btn variant="ghost" onClick={() => handleSocialLogin(loginWithApple)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
+          <Btn variant="ghost" type="button" onClick={() => handleSocialLogin(loginWithApple)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
             🍏 {tr("continueWithApple")}
           </Btn>
         </div>
@@ -137,15 +144,23 @@ const RegisterPage = ({ onGoLogin, t }) => {
   const { signup, loginWithGoogle, loginWithApple } = useAuth();
 
   const getAuthError = (errCode) => {
-    if (errCode.includes("email-already-in-use")) return tr("errEmailInUse");
-    if (errCode.includes("weak-password")) return tr("errWeakPassword");
-    return tr("errDefaultAuth");
+    if (!errCode) return tr("errDefaultAuth");
+    const code = String(errCode).toLowerCase();
+    if (code.includes("email-already-in-use")) return tr("errEmailInUse");
+    if (code.includes("weak-password")) return tr("errWeakPassword");
+    return `${tr("errDefaultAuth")} | Raw Error: ${code}`;
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); setError(""); setLoading(true);
-    try { await signup(email, password); } catch (err) { setError(getAuthError(err.code || err.message)); }
-    setLoading(false);
+    if (e) e.preventDefault();
+    if (!email || !password) return setError("Please enter email and password");
+    setError(""); setLoading(true);
+    try { 
+      await signup(email, password); 
+    } catch (err) { 
+      setError(getAuthError(err.code || err.message)); 
+      setLoading(false);
+    }
   };
 
   const handleSocialLogin = async (providerFunc) => {
@@ -168,7 +183,7 @@ const RegisterPage = ({ onGoLogin, t }) => {
           <FormGroup label={`${tr("password")} (min 6)`}>
              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
           </FormGroup>
-          <Btn fullWidth style={{ marginTop: 10, padding: "12px 0", fontSize: 15 }}>{loading ? tr("saving") : tr("signUpAction")}</Btn>
+          <Btn type="submit" onClick={handleSubmit} fullWidth style={{ marginTop: 10, padding: "12px 0", fontSize: 15 }}>{loading ? tr("saving") : tr("signUpAction")}</Btn>
         </form>
 
         <div style={{ display: "flex", alignItems: "center", margin: "24px 0", color: t.text3, fontSize: 12 }}>
@@ -178,10 +193,10 @@ const RegisterPage = ({ onGoLogin, t }) => {
         </div>
 
         <div style={{ display: "flex", gap: 12, flexDirection: "column" }}>
-          <Btn variant="ghost" onClick={() => handleSocialLogin(loginWithGoogle)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
+          <Btn variant="ghost" type="button" onClick={() => handleSocialLogin(loginWithGoogle)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
             🌐 {tr("continueWithGoogle")}
           </Btn>
-          <Btn variant="ghost" onClick={() => handleSocialLogin(loginWithApple)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
+          <Btn variant="ghost" type="button" onClick={() => handleSocialLogin(loginWithApple)} style={{ border: `1.5px solid ${t.border}`, color: t.text, fontWeight: 600 }}>
             🍏 {tr("continueWithApple")}
           </Btn>
         </div>
