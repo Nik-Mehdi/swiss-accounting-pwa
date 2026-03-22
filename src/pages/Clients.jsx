@@ -63,14 +63,14 @@ export const ClientsPage = ({ t, isMobile }) => {
       }
       setIsModalOpen(false);
     } catch (err) {
-      alert(tr('errorSave'));
+      alert(tr('errorSave') || "Error saving client");
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm(tr('confirmDelete'))) {
+    if (window.confirm(tr('confirmDelete') || "Are you sure you want to delete this client?")) {
       await deleteDoc(doc(db, "clients", id));
     }
   };
@@ -86,7 +86,7 @@ export const ClientsPage = ({ t, isMobile }) => {
       </div>
 
       {/* 🔎 Search Bar */}
-      <Card style={{ marginBottom: 20, padding: "8px 16px" }}>
+      <Card style={{ marginBottom: 20, padding: "8px 16px", background: t.surface, border: `1px solid ${t.border}` }}>
         <input 
           placeholder={tr('searchPlaceholder')}
           value={searchQuery}
@@ -98,7 +98,7 @@ export const ClientsPage = ({ t, isMobile }) => {
       {/* 📋 Clients List */}
       <div style={{ display: "grid", gap: 12 }}>
         {filteredClients.map(client => (
-          <Card key={client.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px" }}>
+          <Card key={client.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", background: t.surface, border: `1px solid ${t.border}` }}>
             <div onClick={() => handleOpenModal(client)} style={{ cursor: "pointer", flex: 1 }}>
               <div style={{ fontWeight: 700, color: t.text, fontSize: 16 }}>{client.name}</div>
               <div style={{ fontSize: 13, color: t.text2, marginTop: 4 }}>{client.email || tr('noEmail')} • {client.phone || tr('noPhone')}</div>
@@ -114,16 +114,16 @@ export const ClientsPage = ({ t, isMobile }) => {
       {/* 🏗️ Full Modal */}
       {isModalOpen && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-          <Card style={{ width: "100%", maxWidth: 500, padding: 30, maxHeight: "90vh", overflowY: "auto" }}>
-            <h3 style={{ marginTop: 0 }}>{editingClient ? tr('edit') : tr('addClient')}</h3>
+          <Card style={{ width: "100%", maxWidth: 500, padding: 30, maxHeight: "90vh", overflowY: "auto", background: t.bg, border: `1px solid ${t.border}` }}>
+            <h3 style={{ marginTop: 0, color: t.text }}>{editingClient ? tr('edit') : tr('addClient')}</h3>
             <form onSubmit={handleSave}>
-              <FormGroup label={tr('clientName')}><Input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} /></FormGroup>
-              <FormGroup label={tr('email')}><Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} /></FormGroup>
-              <FormGroup label={tr('phone')}><Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} /></FormGroup>
-              <FormGroup label={tr('address')}><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} /></FormGroup>
+              <FormGroup label={tr('clientName')}><Input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} style={{background: t.surface, color: t.text}} /></FormGroup>
+              <FormGroup label={tr('email')}><Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} style={{background: t.surface, color: t.text}} /></FormGroup>
+              <FormGroup label={tr('phone')}><Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} style={{background: t.surface, color: t.text}} /></FormGroup>
+              <FormGroup label={tr('address')}><Input value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} style={{background: t.surface, color: t.text}} /></FormGroup>
               <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
                 <Btn type="submit" fullWidth disabled={isSaving}>{isSaving ? tr('saving') : tr('save')}</Btn>
-                <Btn variant="ghost" fullWidth onClick={() => setIsModalOpen(false)}>{tr('cancel')}</Btn>
+                <Btn variant="ghost" fullWidth onClick={() => setIsModalOpen(false)} style={{background: t.surface, color: t.text}}>{tr('cancel')}</Btn>
               </div>
             </form>
           </Card>

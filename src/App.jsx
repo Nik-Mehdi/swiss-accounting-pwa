@@ -217,7 +217,15 @@ const MainContent = () => {
         </div>
       </div>
       
-      {addTxOpen && <AddTransactionModal onClose={() => setAddTxOpen(false)} t={t} ledgers={dynamicLedgers} />}
+      {/* 👇 جادوی هوشمند: پاس دادن اسم دفتر به مودال در صورت حضور در صفحه دفتر 👇 */}
+      {addTxOpen && (
+        <AddTransactionModal 
+          onClose={() => setAddTxOpen(false)} 
+          t={t} 
+          ledgers={dynamicLedgers} 
+          defaultLedgerName={page === "ledger-detail" ? activeLedger?.name : null} 
+        />
+      )}
       {addLedgerOpen && <AddLedgerModal onClose={() => setAddLedgerOpen(false)} t={t} />}
       {ledgerToEdit && <EditLedgerModal ledger={ledgerToEdit} onClose={() => setLedgerToEdit(null)} t={t} />}
     </div>

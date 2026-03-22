@@ -1,13 +1,16 @@
 // src/pages/Export.jsx
 import { useState } from "react";
 import { Card, Btn, FormGroup, Select, Input } from "../components/UI";
+import { useLanguage } from "../context/LanguageContext"; // 👈 هوک زبان اضافه شد
 
 export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
+  const { tr, lang } = useLanguage();
+  const dateLocale = lang === "en" ? "en-US" : "de-CH";
+
   const [ledgerId, setLedgerId] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  // فیلتر کردن تراکنش‌ها بر اساس انتخاب کاربر
   const filteredTxs = transactions.filter(tx => {
     let matchLedger = true;
     let matchDate = true;
@@ -23,21 +26,20 @@ export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
     return matchLedger && matchDate;
   });
 
-  // محاسبه مجموع
   const totalIncome = filteredTxs.filter(tx => tx.type === "income").reduce((acc, curr) => acc + Math.abs(Number(curr.amount)), 0);
   const totalExpense = filteredTxs.filter(tx => tx.type === "expense").reduce((acc, curr) => acc + Math.abs(Number(curr.amount)), 0);
 
   // 📥 موتور خروجی اکسل (CSV)
   const downloadCSV = () => {
-    if (filteredTxs.length === 0) return alert("No transactions to export in this date range!");
+    if (filteredTxs.length === 0) return alert(tr("noTxsToExport"));
     
-    const headers = ["Date", "Type", "Ledger", "Category", "Description", "Amount", "Currency"];
+    const headers = [tr("date"), tr("type"), tr("ledgerColumn"), tr("category"), tr("description"), tr("amount"), tr("currency")];
     const rows = filteredTxs.map(tx => [
-      tx.date, 
+      new Date(tx.date).toLocaleDateString(dateLocale), 
       tx.type.toUpperCase(), 
       tx.ledger, 
       tx.category || "-", 
-      `"${tx.desc.replace(/"/g, '""')}"`, // جلوگیری از بهم ریختن اکسل اگر کاما داشت
+      `"${tx.desc.replace(/"/g, '""')}"`, 
       Math.abs(Number(tx.amount)).toFixed(2),
       ledgers.find(l => l.name === tx.ledger)?.currency || "CHF"
     ]);
@@ -54,18 +56,17 @@ export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
 
   // 🖨️ موتور چاپ گزارش رسمی (Official PDF/Print)
   const handlePrint = () => {
-    if (filteredTxs.length === 0) return alert("No transactions to print!");
+    if (filteredTxs.length === 0) return alert(tr("noTxsToPrint"));
 
-    const selectedLedgerName = ledgerId === "all" ? "All Accounts" : ledgers.find(l => l.id === ledgerId)?.name;
+    const selectedLedgerName = ledgerId === "all" ? tr("allAccountsConsolidated") : ledgers.find(l => l.id === ledgerId)?.name;
     const currency = ledgerId !== "all" ? (ledgers.find(l => l.id === ledgerId)?.currency || "CHF") : "CHF";
 
     const printWindow = window.open('', '', 'width=900,height=800');
     
-    // طراحی سربرگ رسمی و استایل‌های پرینت
     const htmlContent = `
       <html>
         <head>
-          <title>Financial Report - ${userProfile?.companyName || 'Company'}</title>
+          <title>${tr("financialReport")} - ${userProfile?.companyName || tr("yourWorkspace")}</title>
           <style>
             body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; padding: 40px; margin: 0; }
             .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1B6EF3; padding-bottom: 20px; margin-bottom: 30px; }
@@ -89,45 +90,45 @@ export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
         <body>
           <div class="header">
             <div class="company-info">
-              <h1>${userProfile?.companyName || "Your Workspace"}</h1>
-              ${userProfile?.address ? `<p><b>Address:</b> ${userProfile.address}</p>` : ''}
-              ${userProfile?.phone ? `<p><b>Phone:</b> ${userProfile.phone}</p>` : ''}
-              ${userProfile?.email ? `<p><b>Email:</b> ${userProfile.email}</p>` : ''}
+              <h1>${userProfile?.companyName || tr("yourWorkspace")}</h1>
+              ${userProfile?.address ? `<p><b>${tr("address")}:</b> ${userProfile.address}</p>` : ''}
+              ${userProfile?.phone ? `<p><b>${tr("phone")}:</b> ${userProfile.phone}</p>` : ''}
+              ${userProfile?.email ? `<p><b>${tr("email")}:</b> ${userProfile.email}</p>` : ''}
             </div>
             ${userProfile?.logoUrl ? `<img src="${userProfile.logoUrl}" class="logo" />` : ''}
           </div>
 
           <div class="report-title">
-            <h2>Official Financial Statement</h2>
-            <p>Ledger: <b>${selectedLedgerName}</b></p>
-            <p>Period: ${startDate || 'Beginning'} to ${endDate || 'Present'}</p>
+            <h2>${tr("officialFinancialStatement")}</h2>
+            <p>${tr("ledgerColumn")}: <b>${selectedLedgerName}</b></p>
+            <p>${tr("period")}: ${startDate ? new Date(startDate).toLocaleDateString(dateLocale) : tr("beginning")} ${tr("to")} ${endDate ? new Date(endDate).toLocaleDateString(dateLocale) : tr("present")}</p>
           </div>
 
           <div class="summary">
-            <span style="color: #059669">Total Income: ${currency} ${totalIncome.toLocaleString("de-CH", {minimumFractionDigits: 2})}</span>
-            <span style="color: #dc2626">Total Expenses: ${currency} ${totalExpense.toLocaleString("de-CH", {minimumFractionDigits: 2})}</span>
-            <span style="color: #1B6EF3">Net Change: ${currency} ${(totalIncome - totalExpense).toLocaleString("de-CH", {minimumFractionDigits: 2})}</span>
+            <span style="color: #059669">${tr("totalIncomeExport")}: ${currency} ${totalIncome.toLocaleString(dateLocale, {minimumFractionDigits: 2})}</span>
+            <span style="color: #dc2626">${tr("totalExpenseExport")}: ${currency} ${totalExpense.toLocaleString(dateLocale, {minimumFractionDigits: 2})}</span>
+            <span style="color: #1B6EF3">${tr("netChange")}: ${currency} ${(totalIncome - totalExpense).toLocaleString(dateLocale, {minimumFractionDigits: 2})}</span>
           </div>
 
           <table>
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Ledger</th>
-                <th class="amount">Amount (${currency})</th>
+                <th>${tr("date")}</th>
+                <th>${tr("description")}</th>
+                <th>${tr("category")}</th>
+                <th>${tr("ledgerColumn")}</th>
+                <th class="amount">${tr("amount")} (${currency})</th>
               </tr>
             </thead>
             <tbody>
               ${filteredTxs.map(tx => `
                 <tr>
-                  <td>${new Date(tx.date).toLocaleDateString()}</td>
+                  <td>${new Date(tx.date).toLocaleDateString(dateLocale)}</td>
                   <td><b>${tx.desc}</b></td>
-                  <td>${tx.category || 'Transfer'}</td>
+                  <td>${tx.category || tr("transfer")}</td>
                   <td>${tx.ledger}</td>
                   <td class="amount ${tx.type === 'expense' ? 'expense' : 'income'}">
-                    ${tx.type === 'expense' ? '-' : '+'}${Math.abs(Number(tx.amount)).toLocaleString("de-CH", {minimumFractionDigits: 2})}
+                    ${tx.type === 'expense' ? '-' : '+'}${Math.abs(Number(tx.amount)).toLocaleString(dateLocale, {minimumFractionDigits: 2})}
                   </td>
                 </tr>
               `).join('')}
@@ -135,8 +136,8 @@ export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
           </table>
 
           <div class="footer">
-            <p>Generated automatically by Ledgr Workspace on ${new Date().toLocaleString()}</p>
-            <p>This is a computer generated document and valid for accounting purposes.</p>
+            <p>${tr("generatedBy")} ${new Date().toLocaleString(dateLocale)}</p>
+            <p>${tr("validForAccounting")}</p>
           </div>
         </body>
       </html>
@@ -145,7 +146,6 @@ export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
     printWindow.document.write(htmlContent);
     printWindow.document.close();
     
-    // کمی تاخیر برای لود شدن کامل عکس‌ها قبل از پرینت
     setTimeout(() => {
       printWindow.focus();
       printWindow.print();
@@ -154,49 +154,49 @@ export const ExportPage = ({ t, transactions, ledgers, userProfile }) => {
 
   return (
     <div style={{ maxWidth: 800 }}>
-      <h2 style={{ fontSize: 24, fontWeight: 700, letterSpacing: -0.5, color: t.text, marginBottom: 8 }}>Export & Reports</h2>
-      <p style={{ color: t.text3, fontSize: 14, marginBottom: 24 }}>Generate official financial statements and CSV files for your accountant.</p>
+      <h2 style={{ fontSize: 24, fontWeight: 700, letterSpacing: -0.5, color: t.text, marginBottom: 8 }}>{tr("exportReports")}</h2>
+      <p style={{ color: t.text3, fontSize: 14, marginBottom: 24 }}>{tr("generateOfficialDesc")}</p>
       
       <Card style={{ background: t.surface, border: `1px solid ${t.border}`, padding: 24, marginBottom: 24 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 700, color: t.text, marginBottom: 16 }}>Report Filters</h3>
+        <h3 style={{ fontSize: 16, fontWeight: 700, color: t.text, marginBottom: 16 }}>{tr("reportFilters")}</h3>
         
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 24 }}>
-          <FormGroup label="Select Ledger">
+          <FormGroup label={tr("selectLedger")}>
             <Select value={ledgerId} onChange={e=>setLedgerId(e.target.value)} style={{ background: t.bg, color: t.text, border: `1px solid ${t.border}` }}>
-              <option value="all">All Ledgers (Consolidated)</option>
+              <option value="all">{tr("allLedgersConsolidated")}</option>
               {ledgers.map(l => <option key={l.id} value={l.id}>{l.name} ({l.currency})</option>)}
             </Select>
           </FormGroup>
 
-          <FormGroup label="Start Date">
+          <FormGroup label={tr("startDate")}>
             <Input type="date" value={startDate} onChange={e=>setStartDate(e.target.value)} style={{ background: t.bg, color: t.text, border: `1px solid ${t.border}` }} />
           </FormGroup>
 
-          <FormGroup label="End Date">
+          <FormGroup label={tr("endDate")}>
             <Input type="date" value={endDate} onChange={e=>setEndDate(e.target.value)} style={{ background: t.bg, color: t.text, border: `1px solid ${t.border}` }} />
           </FormGroup>
         </div>
 
         <div style={{ padding: 20, background: t.bg, borderRadius: 12, border: `1px solid ${t.border}`, marginBottom: 24 }}>
-          <div style={{ fontSize: 13, color: t.text3, marginBottom: 8 }}>PREVIEW SUMMARY</div>
+          <div style={{ fontSize: 13, color: t.text3, marginBottom: 8 }}>{tr("previewSummary")}</div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <div style={{ fontSize: 24, fontWeight: 700, color: t.text }}>{filteredTxs.length}</div>
-              <div style={{ fontSize: 12, color: t.text2 }}>Transactions Found</div>
+              <div style={{ fontSize: 12, color: t.text2 }}>{tr("transactionsFound")}</div>
             </div>
             <div style={{ textAlign: "right" }}>
-               <div style={{ fontSize: 14, color: t.green }}>+ Income: {totalIncome.toLocaleString("de-CH", {minimumFractionDigits: 2})}</div>
-               <div style={{ fontSize: 14, color: t.red }}>- Expenses: {totalExpense.toLocaleString("de-CH", {minimumFractionDigits: 2})}</div>
+               <div style={{ fontSize: 14, color: t.green }}>+ {tr("income")}: {totalIncome.toLocaleString(dateLocale, {minimumFractionDigits: 2})}</div>
+               <div style={{ fontSize: 14, color: t.red }}>- {tr("expenses")}: {totalExpense.toLocaleString(dateLocale, {minimumFractionDigits: 2})}</div>
             </div>
           </div>
         </div>
 
         <div style={{ display: "flex", gap: 16 }}>
           <Btn onClick={downloadCSV} style={{ flex: 1, background: t.surface, color: t.text, border: `1px solid ${t.border}` }}>
-            📊 Download Excel (CSV)
+            📊 {tr("downloadExcel")}
           </Btn>
           <Btn onClick={handlePrint} style={{ flex: 1 }}>
-            🖨️ Print / Save as Official PDF
+            🖨️ {tr("printOfficialPdf")}
           </Btn>
         </div>
       </Card>
